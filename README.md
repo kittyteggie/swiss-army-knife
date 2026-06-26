@@ -14,7 +14,6 @@ Then run it: `./knife`.
 * `btd` Binary to Decimal converter
    
 # TO-DO
-* Calculator
 * KB to MB to GB Calculator
 * Factorial Calculator
 * Check if a number is prime

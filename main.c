@@ -3,21 +3,98 @@
 #include <stdint.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 
+// Start thingies for the calculator
+const char *expr;
+
+void skip_spaces(){
+	while (isspace(*expr))
+		expr++;
+}
+double parse_expression();
+double parse_number(){
+	skip_spaces();
+	char *end;
+	double value = strtod(expr, &end);
+	if(end == expr){
+		printf("ERROR: Expected number\n");
+		exit(1);
+	}
+	expr = end;
+	return value;
+}
+double parse_factor(){
+	skip_spaces();
+	if(*expr == '('){
+		expr++;
+		double value = parse_expression();
+		skip_spaces();
+		if(*expr != ')'){
+			printf("ERROR: Expected ending the parentheses ')'\n");
+			exit(1);
+		}
+		expr++;
+		return value;
+	}
+	if(*expr == '-'){
+		expr++;
+		return -parse_factor();
+	}
+	return parse_number();
+}
+double parse_term(){
+	double value = parse_factor();
+	while(1){
+		skip_spaces();
+		if(*expr == '*'){
+			expr++;
+			value *= parse_factor();
+		}
+		else if(*expr == '/'){
+			expr++;
+			value /= parse_factor();
+		}
+		else{
+			break;
+		}
+	}
+	return value;
+}
+double parse_expression(){
+	double value = parse_term();
+	while(1){
+		skip_spaces();
+		if(*expr == '+'){
+			expr++;
+			value += parse_term();
+		}
+		else if(*expr == '-'){
+			expr++;
+			value -= parse_term();
+		}
+		else{
+			break;
+		}
+	}
+	return value;
+}
+// End thingies for the calculator
 int main(int argc, char *argv[]){
 	if(argc < 2) {
 		printf("Swiss Army Knife\n");
 		printf("Multiple mini-programs in one\n\n");
 		printf("Avaidable tools:\n");
+		printf("btd	    Binary to decimal converter\n");
+		printf("calc    Calculator\n");
+		printf("dtb	    Decimal to binary converter\n");
 		printf("unixt	Current Unix time\n");
 		printf("unixtc	Unix time to date converter\n");
-		printf("dtb	Decimal to binary converter\n");
-		printf("btd	Binary to decimal converter\n");
 		return 0;
 	}
 	// VERSION
 	if(strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-v") == 0){
-		printf("Swiss Army Knife v0.01\nRepo: https://github.com/kittyteggie/swiss-army-knife\n");
+		printf("Swiss Army Knife v0.02\nRepo: https://github.com/kittyteggie/swiss-army-knife\n");
 		return 0;
 	}
 	// UNIX TIME (unixt)
@@ -82,6 +159,22 @@ int main(int argc, char *argv[]){
 			decimal = decimal * 2 + (binary[i] - '0');
 		}
 		printf("%llu\n", (unsigned long long)decimal);
+		return 0;
+	}
+	// CALCULATOR (calc)
+	if(strcmp(argv[1], "calc") == 0){
+		if(argc != 3){
+			printf("ERROR: Use: %s calc <equation>\n", argv[0]);
+			return 1;
+		}
+		expr = argv[2];
+		double result = parse_expression();
+		skip_spaces();
+		if(*expr != '\0'){
+			printf("ERROR: Unexpected character '%c'\n", *expr);
+			return 1;
+		}
+		printf("%g\n", result);
 		return 0;
 	}
 	printf("ERROR: Unknown argument: %s\n", argv[1]);

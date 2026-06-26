@@ -8,11 +8,12 @@ For compiling you just need to get the `main.c` file and use gcc, a command like
 Then run it: `./knife`.  
   
 # Current tools
+* `btd` Binary to Decimal converter
+* `calc` Calculator
+* `dtb` Decimal to Binary converter  
 * `unixt` Current Unix time
 * `unixtc` Unix time
-* `dtb` Decimal to Binary converter
-* `btd` Binary to Decimal converter
-   
+  
 # TO-DO
 * KB to MB to GB Calculator
 * Factorial Calculator

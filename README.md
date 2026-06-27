@@ -16,7 +16,6 @@ Then run it: `./knife`.
   
 # TO-DO
 * KB to MB to GB Calculator
-* Factorial Calculator
 * Check if a number is prime
 * UUID generator
 * Random password generator
